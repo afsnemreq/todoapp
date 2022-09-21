@@ -4,9 +4,11 @@ function App() {
   const [todoText, setTodoText] = useState("");
   const [todos, setTodos] = useState([]);
   const [isEdit, setIsEdit] = useState(false);
+  const [editId, setEditId] = useState(0);
 
   const editTodo = (id) => {
     setIsEdit(true);
+    setEditId(id);
     const searchedTodo = todos.find((item) => item.id === id);
     setTodoText(searchedTodo.text);
   }
@@ -33,15 +35,30 @@ function App() {
       alert("You have the todo already");
       return;
     }
-    const newTodo = {
-      id: new Date().getTime(),
-      isDone: false,
-      text: todoText,
-      date: new Date(),
-    };
+    if (isEdit == false)
+    {
+      const newTodo = {
+        id: new Date().getTime(),
+        isDone: false,
+        text: todoText,
+        date: new Date(),
+      };
+  
+      setTodos([...todos, newTodo]);
+      setTodoText("");
+    }
+    else if (isEdit == true)
+    {
+      const searchedTodo = todos.find((item) => item.id === editId);
+      const updatedTodo = {
+        ...searchedTodo,
+        text: todoText,
+      };
+      const filteredTodos = todos.filter((item) => item.id !== editId);
+      setTodos([...filteredTodos, updatedTodo]);
+      setTodoText("");
+    }
 
-    setTodos([...todos, newTodo]);
-    setTodoText("");
   };
   return (
     <div className="container">
