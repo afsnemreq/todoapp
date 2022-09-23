@@ -6,6 +6,12 @@ function App() {
   const [isEdit, setIsEdit] = useState(false);
   const [editId, setEditId] = useState(0);
 
+  const deleteTodo = (id) => {
+    const searchedTodo = todos.find((item) => item.id === id);
+    const filteredTodos = todos.filter((item) => item.id !== id);
+    setTodos([...filteredTodos]);
+  }
+
   const editTodo = (id) => {
     setIsEdit(true);
     setEditId(id);
@@ -49,6 +55,7 @@ function App() {
     }
     else if (isEdit == true)
     {
+      alert("edit");
       const searchedTodo = todos.find((item) => item.id === editId);
       const updatedTodo = {
         ...searchedTodo,
@@ -86,6 +93,7 @@ function App() {
               <p>{item.text}</p>
               
               <div>
+                <button className="btn btn-sm btn-danger mx-2" onClick={() => deleteTodo(item.id)}>Delete</button>
                 <button className="btn btn-sm btn-success mx-2" onClick={() => editTodo(item.id)}>Edit</button>
                 <button onClick={() => changeIsDone(item.id)} className="btn btn-sm btn-secondary">
                   {item.isDone === false ? "Done" : "Undone"}
