@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Todo from "./components/todo";
+import Form from "./components/form";
 
 function App() {
   const [todoText, setTodoText] = useState("");
@@ -7,10 +8,24 @@ function App() {
   const [isEdit, setIsEdit] = useState(false);
   const [editId, setEditId] = useState(0);
 
+  useEffect(()=> {
+    const todosFromLocalStorage = localStorage.getItem("todos");
+
+    if (todosFromLocalStorage === null)
+    {
+        localStorage.setItem("todos", JSON.stringify([]));
+    }
+    else {
+        setTodos(JSON.parse(todosFromLocalStorage));
+    }
+
+  },[]);
+
   const deleteTodo = (id) => {
     const searchedTodo = todos.find((item) => item.id === id);
     const filteredTodos = todos.filter((item) => item.id !== id);
     setTodos([...filteredTodos]);
+    localStorage.setItem("todos", JSON.stringify([...filteredTodos]));
   }
 
   const editTodo = (id) => {
@@ -28,6 +43,7 @@ function App() {
     };
     const filteredTodos = todos.filter((item) => item.id !== id);
     setTodos([updatedTodo, ...filteredTodos]);
+    localStorage.setItem("todos", JSON.stringify([updatedTodo, ...filteredTodos]));
   };
 
   const handleSubmit = (event) => {
@@ -52,6 +68,7 @@ function App() {
       };
   
       setTodos([...todos, newTodo]);
+      localStorage.setItem("todos", JSON.stringify([...todos, newTodo]));
       setTodoText("");
     }
     else if (isEdit == true)
@@ -62,7 +79,9 @@ function App() {
         text: todoText,
       };
       const filteredTodos = todos.filter((item) => item.id !== editId);
+
       setTodos([...filteredTodos, updatedTodo]);
+      localStorage.setItem("todos", JSON.stringify([...filteredTodos, updatedTodo]));
       setTodoText("");
     }
 
@@ -70,20 +89,8 @@ function App() {
   return (
     <div className="container">
       <h1 className="text-center my-5">Todo App</h1>
-      <form onSubmit={handleSubmit}>
-        <div className="input-group mb-3">
-          <input
-            value={todoText}
-            type="text"
-            className="form-control"
-            placeholder="Type your todo"
-            onChange={(event) => setTodoText(event.target.value)}
-          />
-          <button className="btn btn-primary" type="submit">
-            ADD
-          </button>
-        </div>
-      </form>
+      <Form handleSubmit={handleSubmit} todoText={todoText} setTodoText={setTodoText} />
+
       {todos.length <= 0 ? (
         <p className="text-center my-5">You don't have any todos yet.</p>
       ) : (
