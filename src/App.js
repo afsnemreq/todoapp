@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Todo from "./components/todo";
 
 function App() {
   const [todoText, setTodoText] = useState("");
@@ -35,8 +36,8 @@ function App() {
       alert("Todo text can't be empty!");
       return;
     }
+
     const hasTodos = todos.find((item) => item.text === todoText);
-    console.log(hasTodos);
     if (hasTodos !== undefined) {
       alert("You have the todo already");
       return;
@@ -55,7 +56,6 @@ function App() {
     }
     else if (isEdit == true)
     {
-      alert("edit");
       const searchedTodo = todos.find((item) => item.id === editId);
       const updatedTodo = {
         ...searchedTodo,
@@ -89,20 +89,7 @@ function App() {
       ) : (
         <>
           {todos.map((item) => (
-            <div className={`alert alert-${item.isDone === false ? "secondary" : "success"} d-flex justify-content-between align-items-center`}>
-              <p>{item.text}</p>
-              
-              <div>
-                <button className="btn btn-sm btn-danger mx-2" onClick={() => deleteTodo(item.id)}>Delete</button>
-                <button className="btn btn-sm btn-success mx-2" onClick={() => editTodo(item.id)}>Edit</button>
-                <button onClick={() => changeIsDone(item.id)} className="btn btn-sm btn-secondary">
-                  {item.isDone === false ? "Done" : "Undone"}
-                </button>
-              </div>
-
-
-
-            </div>
+              <Todo item={item} deleteTodo={deleteTodo} editTodo={editTodo} changeIsDone={changeIsDone} />
           ))}
         </>
       )}
